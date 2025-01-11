@@ -44,8 +44,8 @@ module.exports = {
     '^vue$': '<rootDir>/node_modules/vue/dist/vue.common.js',
     '^test-utils$': '<rootDir>/node_modules/@vue/test-utils/dist/vue-test-utils.js',
     '^~/(.*)$': '<rootDir>/$1',
-    '^framework7$': '<rootDir>/node_modules/framework7/framework7.esm.bundle.js',
-    '^f7vue$': '<rootDir>/node_modules/framework7-vue/framework7-vue.esm.bundle.js',
+    '^framework7$': '<rootDir>/node_modules/framework7/bundle',
+    '^f7vue$': '<rootDir>/node_modules/framework7-vue/bundle',
     '^src/(.*)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1'
     // '.*css$': '<rootDir>/test/jest/utils/stub.css'
@@ -57,7 +57,7 @@ module.exports = {
     '^.+\\.nearley$': 'jest-transform-nearley'
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!framework7|framework7-vue|template7|dom7/)'
+    '/node_modules/(?!framework7|framework7-vue|template7|dom7/|htm)'
   ],
   // transformIgnorePatterns: [
   //   '.*\\.js$'

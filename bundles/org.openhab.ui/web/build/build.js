@@ -26,7 +26,7 @@ exec(`npm run generate-build-info ${process.argv[2]}`).then(() => {
       modules: false,
       children: false, // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
       chunks: false,
-      chunkModules: false,
+      chunkModules: false
     })}\n\n`);
 
     if (stats.hasErrors()) {

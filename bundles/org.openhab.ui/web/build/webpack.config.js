@@ -46,6 +46,7 @@ module.exports = {
     extensions: ['.mjs', '.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
+      vue: '@vue/compat',
       '@': resolvePath('src')
     }
   },
@@ -125,7 +126,14 @@ module.exports = {
       },
       {
         test: /\.vue$/,
-        use: 'vue-loader'
+        loader: 'vue-loader',
+        options: {
+          compilerOptions: {
+            compatConfig: {
+              MODE: 2
+            }
+          }
+        }
       },
       {
         test: /\.css$/,

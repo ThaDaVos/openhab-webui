@@ -37,6 +37,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
+    'semi': 'off',
     'arrow-parens': 'off',
     'comma-dangle': 'error',
     'comma-spacing': 'error',

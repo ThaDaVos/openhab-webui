@@ -2,9 +2,9 @@
   <ul v-if="config.listContainer" :class="config.containerClasses" :style="config.containerStyle">
     <generic-widget-component :context="ctx" v-for="(ctx, idx) in childrenContexts" :key="'repeater-' + idx" @command="onCommand" />
   </ul>
-  <fragment v-else-if="config.fragment">
+  <template v-else-if="config.fragment">
     <generic-widget-component :context="ctx" v-for="(ctx, idx) in childrenContexts" :key="'repeater-' + idx" @command="onCommand" />
-  </fragment>
+  </template>
   <div v-else :class="config.containerClasses" :style="config.containerStyle">
     <generic-widget-component :context="ctx" v-for="(ctx, idx) in childrenContexts" :key="'repeater-' + idx" @command="onCommand" />
   </div>
@@ -14,13 +14,9 @@
 import mixin from '../widget-mixin'
 import { OhRepeaterDefinition } from '@/assets/definitions/widgets/system'
 import { compareItems, compareRules } from '@/components/widgets/widget-order'
-import { Fragment } from 'vue-fragment'
 
 export default {
   mixins: [mixin],
-  components: {
-    Fragment
-  },
   widget: OhRepeaterDefinition,
   data () {
     return {
