@@ -238,7 +238,8 @@ module.exports = {
     new VueLoaderPlugin(),
     ...(env === 'production' ? [
       new ESLintPlugin({
-        extensions: ['js', 'vue']
+        extensions: ['js', 'vue'],
+        emitWarning: env !== 'production',
       })
     ] : [
       // Development only plugins
