@@ -1,20 +1,16 @@
 <template>
-  <fragment v-if="(context.component.slots && context.component.slots.default)">
+  <!-- TODO: Change Implementation to go Fragment less -->
+  <!-- <fragment v-if="(context.component.slots && context.component.slots.default)">
     <generic-widget-component v-for="(slotComponent, idx) in context.component.slots.default" :key="'default-' + idx" :context="childrenContext(slotComponent)" />
-  </fragment>
+  </fragment> -->
 </template>
 
 <script>
 import mixin from '../widget-mixin'
 import { OhContextDefinition } from '@/assets/definitions/widgets/system'
 
-import { Fragment } from 'vue-fragment'
-
 export default {
   mixins: [mixin],
-  components: {
-    Fragment
-  },
   widget: OhContextDefinition,
   data () {
     return {

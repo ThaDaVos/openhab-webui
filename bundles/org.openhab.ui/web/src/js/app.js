@@ -9,13 +9,13 @@ import GenericWidgetComponent from '../components/widgets/generic-widget-compone
 import DeveloperDockIcon from '../components/developer/developer-dock-icon.vue'
 
 // Import Framework7
-import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+import Framework7 from 'framework7/lite-bundle'
 
 // Import Framework7-Vue Plugin
-import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
+import Framework7Vue from 'framework7-vue/bundle'
 
 // Import Framework7 Styles
-import 'framework7/css/framework7.bundle.css'
+import 'framework7/framework7-bundle.css'
 
 // Import Icons and App Custom Styles
 import '../css/icons.css'
@@ -51,8 +51,8 @@ store.dispatch('initializeTrackingStore')
 import i18n from './i18n'
 
 // Import vuetrend
-import Trend from 'vuetrend'
-Vue.use(Trend)
+// import Trend from 'vuetrend'
+// Vue.use(Trend)
 
 // Import Fullscreen Plugin
 import fullscreen from 'vue-fullscreen'

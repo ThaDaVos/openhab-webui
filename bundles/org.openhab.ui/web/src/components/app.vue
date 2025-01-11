@@ -327,7 +327,7 @@
 </style>
 
 <script>
-import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+import Framework7 from 'framework7/lite-bundle'
 
 import buildInfo from '@/assets/build-info'
 

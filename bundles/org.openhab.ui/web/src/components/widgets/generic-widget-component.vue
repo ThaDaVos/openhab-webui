@@ -19,9 +19,9 @@
   <div v-else-if="componentType && componentType === 'Label' && visible" :class="config.class" :style="config.style">
     {{ config.text }}
   </div>
-  <fragment v-else-if="componentType && componentType === 'Content'">
+  <template v-else-if="componentType && componentType === 'Content'">
     {{ config.text }}
-  </fragment>
+  </template>
   <pre v-else-if="componentType && componentType === 'Error' && visible" class="text-color-red" style="white-space: pre-wrap">{{ config.error }}</pre>
   <component v-else-if="visible" :is="componentType" v-bind="config">
     {{ config.content }}
@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
-
 import mixin from './widget-mixin'
 
 import * as SystemWidgets from './system/index'
@@ -45,7 +43,6 @@ import * as LayoutWidgets from './layout/index'
 export default {
   mixins: [mixin],
   components: {
-    Fragment,
     ...SystemWidgets,
     ...StandardWidgets,
     ...StandardListWidgets,

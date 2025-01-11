@@ -1,4 +1,4 @@
-import { Utils } from 'framework7'
+import { utils as Utils } from 'framework7'
 
 import { authorize, setBasicCredentials, clearBasicCredentials, storeBasicCredentials } from '@/js/openhab/auth'
 
