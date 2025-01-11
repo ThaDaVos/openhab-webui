@@ -17,6 +17,7 @@ module.exports = {
     'eslint:recommended',
     '@vue/standard',
     'plugin:cypress/recommended',
+    'plugin:vue/vue3-essential',
     'plugin:vue/recommended'
   ],
 
