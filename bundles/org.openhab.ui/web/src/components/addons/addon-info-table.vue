@@ -3,7 +3,9 @@
     <f7-list-item v-for="line in information" :key="line.id"
                   :title="line.title" :after="line.value"
                   :link="line.linkUrl" external no-chevron target="_blank">
-      <f7-icon slot="after" v-if="line.afterIcon" :f7="line.afterIcon" />
+      <template #after>
+        <f7-icon v-if="line.afterIcon" :f7="line.afterIcon" />
+      </template>
     </f7-list-item>
   </f7-list>
 </template>
