@@ -7,7 +7,7 @@ import { createPinia } from 'pinia'
 import Framework7 from 'framework7/lite-bundle';
 
 // Import Framework7 Vue
-// @ts-expect-error registerComponents is missing from the typescript definition
+// @ts-expect-error registerComponents is missing from the typescript definition, see https://github.com/framework7io/framework7/issues/4302
 import Framework7Vue, { registerComponents } from 'framework7-vue/bundle'
 
 import App from './App.vue'
