@@ -9,7 +9,7 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
-dist
+www
 dist-ssr
 coverage
 *.local
@@ -31,3 +31,5 @@ coverage
 
 test-results/
 playwright-report/
+
+.vite-inspect
