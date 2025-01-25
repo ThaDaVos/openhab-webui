@@ -1,0 +1,8 @@
+[
+  {
+    "name": "home",
+    "path": "/home",
+    "component": "/src/pages/home.vue",
+    "props": true
+  }
+]
