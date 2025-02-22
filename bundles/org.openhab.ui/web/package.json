@@ -22,6 +22,7 @@
     "color": "ff7700",
     "bundler": "webpack"
   },
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
