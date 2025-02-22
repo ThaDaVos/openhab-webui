@@ -86,5 +86,8 @@
     "vite": {
       "esbuild": "^0.25.0"
     }
+  },
+  "resolutions": {
+    "vite-plugin-inspect": "^10.2.1"
   }
 }

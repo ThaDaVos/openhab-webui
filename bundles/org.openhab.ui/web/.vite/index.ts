@@ -8,7 +8,6 @@ import pages from './pages'
 import autoImport from './autoImport'
 import components from './components'
 import pwa from './pwa'
-import inspect from './inspect'
 import inspector from './inspector'
 import checker from './checker'
 
@@ -16,13 +15,12 @@ export default function (config: ConfigEnv) {
   return sortByAfterAndBefore([
     vue,
     vuejsx,
-    // vueDevTools, // Breaks vite-plugin-inspect
+    vueDevTools,
     svg,
     pages,
     autoImport,
     components,
     pwa,
-    inspect,
     inspector,
     checker,
   ]).map((plugin) =>
