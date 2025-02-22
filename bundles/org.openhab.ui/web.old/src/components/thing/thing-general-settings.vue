@@ -5,9 +5,11 @@
         <f7-row>
           <f7-col>
             <f7-list inline-labels no-hairlines-md class="no-margin">
-              <f7-list-input v-if="createMode" label="Thing ID" type="text" placeholder="Required" :value="thing.ID"
-                             @input="changeUID" info="Note: cannot be changed after the creation"
-                             required validate pattern="[A-Za-z0-9_\-]+" error-message="Required. A-Z,a-z,0-9,_,- only" />
+              <f7-list-input v-if="createMode" label="Thing ID" type="text" placeholder="Required" :value="thing.ID" input-id="input"
+                             @input="changeUID" info="Note: cannot be changed after the creation" clear-button
+                             required :error-message="idErrorMessage" :error-message-force="!!idErrorMessage">
+                <f7-link slot="inner" icon-f7="hammer_fill" style="margin-top: 4px; margin-left: 4px; margin-bottom: auto" tooltip="Fix ID" v-if="createMode && idErrorMessage && !idErrorMessage.includes('exists') && thing.ID" @click="$oh.utils.normalizeInputForThingId('#input')" />
+              </f7-list-input>
               <f7-list-input label="Thing UID" type="text" :input="false" disabled>
                 <span slot="input">
                   {{ thing.UID }}
@@ -43,9 +45,11 @@
 <script>
 import ThingPicker from '@/components/config/controls/thing-picker.vue'
 import ClipboardIcon from '@/components/util/clipboard-icon.vue'
+import ThingMixin from '@/components/thing/thing-mixin'
 
 export default {
-  props: ['thing', 'thingType', 'createMode', 'ready', 'readOnly'],
+  mixins: [ThingMixin],
+  props: ['thing', 'thingType', 'createMode', 'ready', 'readOnly', 'things'],
   components: {
     ThingPicker,
     ClipboardIcon
@@ -53,6 +57,9 @@ export default {
   computed: {
     editable () {
       return this.createMode || (this.thing && this.thing.editable)
+    },
+    idErrorMessage () {
+      return this.validateThingUID(this.thing.UID, this.thing.ID)
     }
   },
   methods: {
@@ -63,11 +70,11 @@ export default {
     },
     changeUID (event) {
       this.$set(this.thing, 'ID', event.target.value)
-      if (this.createMode) this.thing.UID = this.computedThingUid()
+      this.thing.UID = this.computedThingUid()
     },
     updateBridge (value) {
       this.thing.bridgeUID = value
-      if (this.createMode) this.thing.UID = this.computedThingUid()
+      this.thing.UID = this.computedThingUid()
     }
   }
 }

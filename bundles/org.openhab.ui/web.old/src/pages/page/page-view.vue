@@ -4,12 +4,13 @@
       <f7-nav-left v-if="!showBackButton">
         <f7-link icon-ios="f7:menu" icon-aurora="f7:menu" icon-md="material:menu" panel-open="left" />
       </f7-nav-left>
-      <f7-nav-title>{{ (page) ? page.config.label : '' }}</f7-nav-title>
+      <f7-nav-title>{{ pageLabel }}</f7-nav-title>
       <f7-nav-right>
         <f7-link v-if="isAdmin" icon-md="material:edit" @click="editPage" class="edit-page-button">
           {{ $theme.md ? '' : $t('page.navbar.edit') }}
         </f7-link>
         <f7-link v-if="fullscreenIcon" class="fullscreen-icon-navbar" :icon-f7="fullscreenIcon" @click="toggleFullscreen" />
+        <div v-if="!showBackButton && !isAdmin && !fullscreenIcon" style="width: 44px; height: 44px;" />
       </f7-nav-right>
     </f7-navbar>
     <template v-else>
@@ -19,7 +20,13 @@
 
     <!-- Tabbed Pages -->
     <f7-toolbar tabbar labels bottom v-if="page && pageType === 'tabs' && visibleToCurrentUser">
-      <f7-link v-for="(tab, idx) in page.slots.default" :key="idx" tab-link @click="onTabChange(idx)" :tab-link-active="currentTab === idx" :icon-ios="tabEvaluateExpression(tab, idx, 'icon')" :icon-md="tabEvaluateExpression(tab, idx, 'icon')" :icon-aurora="tabEvaluateExpression(tab, idx, 'icon')" :text="tabEvaluateExpression(tab, idx, 'title')" :icon-badge="tabEvaluateExpression(tab, idx, 'badge')" :badge-color="tabEvaluateExpression(tab, idx, 'badgeColor')" />
+      <f7-link v-for="(tab, idx) in page.slots.default" :key="idx" tab-link @click="onTabChange(idx)" :tab-link-active="currentTab === idx">
+        <i v-if="tabEvaluateExpression(tab, idx, 'icon')" class="icon" :style="{ width: tabBarIconSize, height: tabBarIconSize }">
+          <oh-icon :icon="tabEvaluateExpression(tab, idx, 'icon')" :width="tabBarIconSize" :height="tabBarIconSize" />
+          <f7-badge v-if="tabEvaluateExpression(tab, idx, 'badge')" :color="tabEvaluateExpression(tab, idx, 'badgeColor')">{{ tabEvaluateExpression(tab, idx, 'badge') }}</f7-badge>
+        </i>
+        <span class="tabbar-label">{{ tabEvaluateExpression(tab, idx, 'title') }}</span>
+      </f7-link>
     </f7-toolbar>
     <f7-tabs v-if="page && pageType === 'tabs' && visibleToCurrentUser">
       <f7-tab v-for="(tab, idx) in page.slots.default" :key="idx" :tab-active="currentTab === idx">
@@ -44,6 +51,9 @@
   position absolute
   top 8px
   right 8px
+.icon
+  .badge
+    margin-left -10px !important
 </style>
 
 <script>
@@ -67,7 +77,9 @@ export default {
   data () {
     return {
       currentTab: this.initialTab ? Number(this.initialTab) : 0,
-      fullscreen: this.$fullscreen.getState()
+      fullscreen: this.$fullscreen.getState(),
+
+      vars: {}
     }
   },
   watch: {
@@ -84,6 +96,10 @@ export default {
       if (!pageComponent || !pageComponent.config || !pageComponent.config.style) return null
       return pageComponent.config.style
     },
+    // Resolve the f7 CSS variable because iconify's SVG element doesn't like css variables
+    tabBarIconSize () {
+      return window.getComputedStyle(document.documentElement).getPropertyValue('--f7-tabbar-icon-size')
+    },
     context () {
       return {
         component: this.page,
@@ -97,6 +113,9 @@ export default {
     pageType () {
       return this.getPageType(this.page)
     },
+    pageLabel () {
+      return this.page?.config.label
+    },
     isAdmin () {
       return this.page && this.$store.getters.isAdmin
     },
@@ -109,12 +128,13 @@ export default {
       return false
     },
     showBackButton () {
-      return this.deep && (!this.page || !this.page.config.sidebar)
+      return this.deep && !this.page?.config.sidebar
     },
     fullscreenIcon () {
-      if (this.page && this.$fullscreen.support && this.page.config.showFullscreenIcon) {
+      if (this.$fullscreen.support && this.page?.config.showFullscreenIcon) {
         return this.fullscreen ? 'rectangle_arrow_up_right_arrow_down_left_slash' : 'rectangle_arrow_up_right_arrow_down_left'
-      } else return null
+      }
+      return null
     }
   },
   methods: {

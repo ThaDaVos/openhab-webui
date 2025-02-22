@@ -125,10 +125,8 @@
                  :class="{ 'disabled-link': !stateConnected || !stateProcessing, 'no-margin-left': $device.ios }"
                  @click="loggingPause" />
         <f7-link icon-ios="f7:stop_fill" icon-aurora="f7:stop_fill" icon-md="material:stop_fill"
-                 :icon-color="!stateConnected ? 'gray' : ''"
-                 :tooltip="!$device.ios ? 'Stop receiving logs' : ''"
-                 :class="{ 'disabled-link': !stateConnected, 'no-margin-left': $device.ios }"
-                 @click="loggingStop" />
+                 :icon-color="!stateConnected ? 'gray' : ''" :tooltip="!$device.ios ? 'Stop receiving logs' : ''"
+                 :class="{ 'disabled-link': !stateConnected, 'no-margin-left': $device.ios }" @click="loggingStop" />
       </f7-nav-right>
 
       <f7-subnavbar :inner="false" style="padding-right: var(--f7-safe-area-right)">
@@ -158,8 +156,8 @@
                :class="{ 'disabled-link': filterCount == 0 }" @click="downloadCSV" />
       <f7-link icon-f7="rectangle_on_rectangle" tooltip="Copy filtered log to clipboard"
                :class="{ 'disabled-link': filterCount == 0 }" @click="copyTableToClipboard" />
-      <f7-link icon-f7="trash" tooltip="Clear the log buffer"
-               :class="{ 'disabled-link': tableData.length == 0 }" @click="clearLog" />
+      <f7-link icon-f7="trash" tooltip="Clear the log buffer" :class="{ 'disabled-link': tableData.length == 0 }"
+               @click="clearLog" />
       <f7-link @click="toggleErrorDisplay" tooltip="Always show error level logs">
         <f7-icon v-if="showErrors" f7="exclamationmark_triangle_fill" />
         <f7-icon v-else f7="exclamationmark_triangle" />
@@ -227,9 +225,27 @@
   td.sticky
     position sticky
     left 0
+    width 105px
     color black
     background #f1f1f1
     z-index 1
+    white-space nowrap
+    overflow hidden
+
+  td.level
+    width 50px
+
+  td.logger
+    width 280px
+
+  span.logger
+    width 280px
+    display block
+    direction rtl
+    text-align left
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
 
   tr.table-rows
     height 31px
@@ -339,6 +355,7 @@ export default {
       logEnd: '--:--:--',
       currentHighlightColorItemIndex: null,
       currentHighlightColor: '#FF5252',
+      lastSequence: 0,
       colors: [
         '#FF0000', // Red
         '#00FF00', // Green
@@ -418,15 +435,22 @@ export default {
       const readyCallback = () => {
         this.stateConnected = true
         this.stateProcessing = true
+        this.socket.send('{"sequenceStart": ' + this.lastSequence + '}')
         this.$nextTick(() => this.scrollToBottom())
       }
 
       const messageCallback = (event) => {
-        this.addLogEntry(event)
+        if (Array.isArray(event)) {
+          event.forEach((ev) => {
+            this.addLogEntry(ev)
+          })
+        } else {
+          this.addLogEntry(event)
+        }
       }
 
       const heartbeatCallback = () => {
-        this.socket.send('[]')
+        this.socket.send('{}')
       }
 
       this.socket = this.$oh.ws.connect('/ws/logs', messageCallback, heartbeatCallback, readyCallback, null, 9)
@@ -449,13 +473,32 @@ export default {
     renderEntry (entity) {
       let tr = document.createElement('tr')
       tr.className = 'table-rows ' + entity.level.toLowerCase()
-      tr.innerHTML = `<td class="sticky">${entity.time}<span class="milliseconds">${entity.milliseconds}</span></td>` +
-        `<td>${entity.level}</td>` +
-        `<td>${entity.loggerName}</td>` +
+      let icon = 'question_diamond'
+      switch (entity.level) {
+        case 'TRACE':
+          icon = 'line_horizontal_3'
+          break
+        case 'DEBUG':
+          icon = 'ant'
+          break
+        case 'INFO':
+          icon = 'info_circle'
+          break
+        case 'WARN':
+          icon = 'flag'
+          break
+        case 'ERROR':
+          icon = 'exclamationmark_octagon_fill'
+          break
+      }
+      tr.innerHTML = '<td class="sticky"><i class="icon f7-icons" style="font-size: 18px;">' + icon + `</i> ${entity.time}<span class="milliseconds">${entity.milliseconds}</span></td>` +
+        `<td class="level">${entity.level}</td>` +
+        `<td class="logger"><span class="logger">${entity.loggerName}</span></td>` +
         `<td class="nowrap">${this.highlightText(entity.message)}</td>`
       return tr
     },
     addLogEntry (logEntry) {
+      this.lastSequence = Math.max(this.lastSequence, logEntry.sequence)
       const date = new Date(logEntry.unixtime)
 
       const hours = date.getHours().toString().padStart(2, '0')
@@ -636,6 +679,9 @@ export default {
       this.$refs.dataTable.firstChild.innerHTML = ''
       for (const entry of this.tableData) {
         entry.visible = this.processFilter(entry)
+        if (entry.visible) {
+          cnt++
+        }
       }
       this.filterCount = cnt
       this.redrawPartOfTable()
