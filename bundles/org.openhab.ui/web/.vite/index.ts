@@ -2,7 +2,7 @@ import type { ConfigEnv } from 'vite'
 import { sortByAfterAndBefore } from '../src/lib'
 import vue from './vue'
 import vuejsx from './vueJsx'
-// import vueDevTools from './vueDevTools'
+import vueDevTools from './vueDevTools'
 import svg from './svg'
 import pages from './pages'
 import autoImport from './autoImport'
@@ -16,7 +16,7 @@ export default function (config: ConfigEnv) {
   return sortByAfterAndBefore([
     vue,
     vuejsx,
-    // vueDevTools, / Breaks vite-plugin-inspect
+    // vueDevTools, // Breaks vite-plugin-inspect
     svg,
     pages,
     autoImport,

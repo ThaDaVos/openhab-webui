@@ -31,7 +31,7 @@ export function sortByAfterAndBefore<Sortable extends SortableObject>(
 
   let pointer: string = array[0].id
   do {
-    const newPointer = befores.get(pointer)
+    const newPointer: string | undefined = befores.get(pointer)
 
     if (newPointer === undefined) {
       break
@@ -48,15 +48,12 @@ export function sortByAfterAndBefore<Sortable extends SortableObject>(
 
   const pointed: string[] = []
   do {
-    const retrieved = map.get(pointer)
+    const retrieved: Sortable = map.get(pointer)!
 
-    if (retrieved) {
-      // Just to snooze Typescript - it is always true, or at least should be
-      sorted.push(retrieved)
-      pointed.push(pointer)
-    }
+    sorted.push(retrieved)
+    pointed.push(pointer)
 
-    const newPointer = afters.get(pointer)
+    const newPointer: string | undefined = afters.get(pointer)
 
     if (newPointer === undefined) {
       break
@@ -65,12 +62,7 @@ export function sortByAfterAndBefore<Sortable extends SortableObject>(
     pointer = newPointer
   } while (pointer !== undefined)
 
-  const missed = array.filter((sortable) => pointed.includes(sortable.id) === false)
-
-  // console.log(
-  //   'The following are not sorted',
-  //   missed.map((x) => x.id),
-  // )
+  const missed: Sortable[] = array.filter((sortable) => pointed.includes(sortable.id) === false)
 
   return sorted.reverse().concat(missed)
 }
