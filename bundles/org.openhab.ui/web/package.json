@@ -1,8 +1,27 @@
 {
   "name": "openhab",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
+  "version": "4.2.0",
+  "description": "openHAB",
+  "repository": "https://github.com/openhab/openhab-webui",
+  "license": "EPL-2.0",
+  "framework7": {
+    "type": [
+      "web",
+      "pwa"
+    ],
+    "name": "openHAB",
+    "pkg": "org.openhab.ui",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "framework": "vue",
+    "template": "split-view",
+    "cssPreProcessor": "sass",
+    "customColor": true,
+    "color": "ff7700",
+    "bundler": "webpack"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
