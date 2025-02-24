@@ -1,28 +1,47 @@
-import { writeFile, mkdir, readdir, unlink, lstat, rm } from 'fs/promises'
-import { existsSync } from 'fs'
-import { join } from 'path'
-import openapiTS from 'openapi-typescript'
-import fetch from 'node-fetch'
-import { EOL } from 'os'
-import $RefParser from '@apidevtools/json-schema-ref-parser'
-import { OpenAPIV3 } from 'openapi-types'
-
+import { writeFile } from 'node:fs/promises'
+import openapiTS, { astToString } from 'openapi-typescript'
+import { join } from 'node:path'
+import { ensureDirectoryExists, retrieveOpenAPI } from './utils'
 import Config from './config'
+import { EOL } from 'node:os'
 
-if (existsSync(Config.outputDir) === false) {
-  await mkdir(Config.outputDir, { recursive: true })
-} else if (Config.clean) {
-  const contents = await readdir(Config.outputDir)
+await ensureDirectoryExists(Config.outputDir, Config.clean)
 
-  for (const content of contents) {
-    const path = join(Config.outputDir, content)
+const openAPISpecUrl = new URL(
+  `${Config.instance.scheme}://${Config.instance.host}:${Config.instance.port}${Config.instance.path}`,
+)
 
-    const stat = await lstat(path)
+const document = await retrieveOpenAPI(openAPISpecUrl)
 
-    if (stat.isDirectory()) {
-      await rm(path, { recursive: true, force: true })
-    } else {
-      await unlink(path)
-    }
-  }
-}
+console.log('OpenAPI document retrieved')
+
+const ast = await openapiTS(document, {})
+
+console.log('OpenAPI document converted to TypeScript')
+
+const code = astToString(ast)
+
+console.log('Generated TypeScript code')
+
+await writeFile(join(Config.outputDir, 'openapi.d.ts'), code)
+
+await writeFile(
+  join(Config.outputDir, 'client.ts'),
+  [
+    `import createClient, { Client, ClientOptions } from 'openapi-fetch'`,
+    `import type { paths } from './openapi'`,
+    ``,
+    `declare global {`,
+    `  interface Window {`,
+    `    location: {`,
+    `      href: string`,
+    `    }`,
+    `  }`,
+    `  var window: Window;`,
+    `}`,
+    ``,
+    `export default function clientFactory(baseUrl: string = window.location.href, options: ClientOptions | null = null): Client<paths> {`,
+    `  return createClient<paths>({ baseUrl, ...(options ?? {}) })`,
+    `}`,
+  ].join(EOL),
+)

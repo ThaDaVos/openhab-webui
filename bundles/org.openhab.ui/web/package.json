@@ -57,6 +57,7 @@
     "@vue/eslint-config-typescript": "^14.4.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "esbuild": "^0.25.0",
     "eslint": "^9.21.0",
     "eslint-plugin-oxlint": "^0.15.11",
     "eslint-plugin-playwright": "^2.2.0",
@@ -81,9 +82,7 @@
     "vue-tsc": "^2.2.2"
   },
   "overrides": {
-    "vite": {
-      "esbuild": "^0.25.0"
-    }
+    "esbuild": "$esbuild"
   },
   "resolutions": {
     "vite-plugin-inspect": "^10.2.1"
